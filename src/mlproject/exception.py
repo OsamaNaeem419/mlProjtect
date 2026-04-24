@@ -1,20 +1,16 @@
 import sys
-from src.mlproject.logger import logging
+
+def error_message_detail(error, error_detail: sys):
+    _, _, exc_tb = error_detail.exc_info()
+    file_name = exc_tb.tb_frame.f_code.co_filename
+
+    return f"Error in [{file_name}] line [{exc_tb.tb_lineno}] message [{str(error)}]"
 
 
-class customException(Exception):
-    def __init__(self, error_message: Exception, error_detail: sys) -> None:
+class CustomException(Exception):
+    def __init__(self, error_message, error_detail: sys):
         super().__init__(error_message)
-        self.error_message = customException.get_detailed_error_message(error_message=error_message,
-                                                                        error_detail=error_detail)
+        self.error_message = error_message_detail(error_message, error_detail)
 
-    @staticmethod
-    def get_detailed_error_message(error_message: Exception, error_detail: sys) -> str:
-        _, _, exc_tb = error_detail.exc_info()
-        file_name = exc_tb.tb_frame.f_code.co_filename
-        line_number = exc_tb.tb_lineno
-        detailed_error_message = f"Error occurred in script: [{file_name}] at line number: [{line_number}] with error message: [{error_message}]"
-        return detailed_error_message
-
-    def __str__(self) -> str:
-        return self.error_message                                   
+    def __str__(self):
+        return self.error_message
